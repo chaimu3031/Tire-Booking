@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SWAPYYC — Seasonal Tire Change Booking</title>
+<title>SWAPYYC — Mobile Tire Service Booking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+SC:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0d0d0d;
@@ -34,6 +34,14 @@
     min-height: 100vh;
   }
 
+  /* CJK languages need a softer body font */
+  html[lang="zh"] body, html[lang="ko"] body, html[lang="ja"] body {
+    font-family: 'Noto Sans SC', 'Noto Sans KR', 'Noto Sans JP', 'JetBrains Mono', sans-serif;
+  }
+  html[lang="zh"] body { font-family: 'Noto Sans SC', sans-serif; }
+  html[lang="ko"] body { font-family: 'Noto Sans KR', sans-serif; }
+  html[lang="ja"] body { font-family: 'Noto Sans JP', sans-serif; }
+
   body::before {
     content: '';
     position: fixed;
@@ -53,6 +61,7 @@
     justify-content: space-between;
     align-items: center;
     background: var(--bg);
+    gap: 20px;
   }
 
   .brand {
@@ -68,6 +77,7 @@
     border-radius: 50%;
     border: 3px solid var(--ink);
     position: relative;
+    flex-shrink: 0;
   }
   .brand-mark::before {
     content: '';
@@ -93,9 +103,15 @@
     padding-left: 14px;
   }
 
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
   .header-meta {
     display: flex;
-    gap: 32px;
+    gap: 24px;
     font-size: 11px;
     letter-spacing: 0.1em;
     color: var(--ink-dim);
@@ -105,6 +121,76 @@
     color: var(--ink);
     font-weight: 500;
     margin-left: 6px;
+  }
+
+  /* Language toggle */
+  .lang-toggle {
+    position: relative;
+  }
+  .lang-btn {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    padding: 9px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color .15s;
+  }
+  .lang-btn:hover { border-color: var(--accent); }
+  .lang-btn::before {
+    content: '◐';
+    color: var(--accent);
+    font-size: 12px;
+  }
+  .lang-btn::after {
+    content: '▾';
+    color: var(--ink-dim);
+    font-size: 9px;
+    margin-left: 2px;
+  }
+  .lang-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    min-width: 180px;
+    display: none;
+    z-index: 50;
+  }
+  .lang-menu.open { display: block; }
+  .lang-menu button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+    transition: background .15s;
+  }
+  .lang-menu button:last-child { border-bottom: none; }
+  .lang-menu button:hover { background: var(--bg); color: var(--accent); }
+  .lang-menu button.active {
+    color: var(--accent);
+    background: rgba(255,87,34,0.04);
+  }
+  .lang-menu button .code {
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
   }
 
   .app {
@@ -208,6 +294,16 @@
     text-transform: uppercase;
     margin-bottom: 18px;
   }
+  html[lang="zh"] .section-title,
+  html[lang="ko"] .section-title,
+  html[lang="ja"] .section-title {
+    font-family: 'Noto Sans SC', 'Noto Sans KR', 'Noto Sans JP', sans-serif;
+    font-weight: 900;
+  }
+  html[lang="zh"] .section-title { font-family: 'Noto Sans SC', sans-serif; }
+  html[lang="ko"] .section-title { font-family: 'Noto Sans KR', sans-serif; }
+  html[lang="ja"] .section-title { font-family: 'Noto Sans JP', sans-serif; }
+
   .section-title em {
     font-family: 'Instrument Serif', serif;
     font-style: italic;
@@ -223,15 +319,23 @@
     line-height: 1.6;
   }
 
+  /* Service grid */
+  .service-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: 820px;
+  }
   .service-card {
     background: var(--panel);
     border: 1px solid var(--rule);
-    padding: 40px;
+    padding: 28px;
     cursor: pointer;
     transition: all .25s;
     position: relative;
     overflow: hidden;
-    max-width: 720px;
+    display: flex;
+    flex-direction: column;
   }
   .service-card:hover, .service-card.selected {
     border-color: var(--accent);
@@ -240,74 +344,69 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,87,34,0.06), transparent 60%);
+    background: linear-gradient(135deg, rgba(255,87,34,0.08), transparent 65%);
     pointer-events: none;
   }
   .service-card.selected::after {
-    content: 'SELECTED';
+    content: '✓';
     position: absolute;
-    top: 18px; right: 18px;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    padding: 4px 10px;
-    border: 1px solid var(--accent);
+    top: 14px; right: 14px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--bg);
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
   }
 
-  .service-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 30px;
-    margin-bottom: 22px;
-  }
-  .service-title {
-    font-family: 'Archivo Black', sans-serif;
+  .service-icon {
     font-size: 28px;
-    line-height: 1.05;
+    margin-bottom: 14px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .service-name {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 20px;
+    line-height: 1.1;
     text-transform: uppercase;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
+    margin-bottom: 4px;
+  }
+  html[lang="zh"] .service-name { font-family: 'Noto Sans SC', sans-serif; font-weight: 900; }
+  html[lang="ko"] .service-name { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; }
+  html[lang="ja"] .service-name { font-family: 'Noto Sans JP', sans-serif; font-weight: 900; }
+
+  .service-sub {
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    font-weight: 500;
   }
   .service-price {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 32px;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-  .service-price small {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--ink-dim);
-    display: block;
-    text-align: right;
-    margin-top: 4px;
-    font-weight: 400;
-    letter-spacing: 0.1em;
-  }
-  .service-desc {
-    color: var(--ink-dim);
-    font-size: 13px;
-    margin-bottom: 24px;
-    max-width: 480px;
-  }
-  .service-bullets {
-    list-style: none;
-    display: grid;
-    gap: 8px;
-    padding-top: 22px;
+    margin-top: auto;
+    padding-top: 18px;
     border-top: 1px dashed var(--rule);
-  }
-  .service-bullets li {
-    font-size: 12px;
-    color: var(--ink);
     display: flex;
-    align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: baseline;
   }
-  .service-bullets li::before {
-    content: '◇';
+  .service-price .amt {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 28px;
     color: var(--accent);
   }
+  .service-price .note {
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
   .requirement-banner {
     margin-top: 28px;
     padding: 14px 18px;
@@ -315,13 +414,15 @@
     border-left: 3px solid var(--warning);
     font-size: 12px;
     color: var(--ink);
-    max-width: 720px;
+    max-width: 820px;
+    line-height: 1.6;
   }
   .requirement-banner b {
     color: var(--warning);
     letter-spacing: 0.05em;
   }
 
+  /* City */
   .city-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -352,6 +453,9 @@
     text-transform: uppercase;
     margin-bottom: 6px;
   }
+  html[lang="zh"] .city-name { font-family: 'Noto Sans SC', sans-serif; font-weight: 900; }
+  html[lang="ko"] .city-name { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; }
+  html[lang="ja"] .city-name { font-family: 'Noto Sans JP', sans-serif; font-weight: 900; }
   .city-prov {
     font-size: 11px;
     color: var(--ink-dim);
@@ -371,6 +475,7 @@
   .city-card.unavailable .city-status { color: var(--ink-dim); }
   .city-card.selected .city-status { color: var(--accent); border-color: var(--accent); }
 
+  /* Calendar */
   .datetime-wrap {
     display: grid;
     grid-template-columns: 1.1fr 1fr;
@@ -385,14 +490,11 @@
   }
   .cal-month {
     font-family: 'Archivo Black', sans-serif;
-    font-size: 24px;
+    font-size: 22px;
     text-transform: uppercase;
     letter-spacing: 0.02em;
   }
-  .cal-nav {
-    display: flex;
-    gap: 8px;
-  }
+  .cal-nav { display: flex; gap: 8px; }
   .cal-nav button {
     background: var(--panel);
     border: 1px solid var(--rule);
@@ -461,14 +563,18 @@
     background: transparent;
     cursor: default;
   }
-  .cal-day.weekend {
-    background: rgba(255,87,34,0.04);
+  .cal-day.closed {
+    color: var(--ink-faint);
+    background: transparent;
+    cursor: not-allowed;
+    border-color: var(--rule);
+    opacity: 0.4;
+  }
+  .cal-day.open-day {
+    background: rgba(101,212,114,0.05);
   }
 
-  .timeslots {
-    display: flex;
-    flex-direction: column;
-  }
+  .timeslots { display: flex; flex-direction: column; }
   .timeslot-head {
     font-size: 11px;
     letter-spacing: 0.15em;
@@ -479,9 +585,7 @@
     justify-content: space-between;
     align-items: center;
   }
-  .timeslot-head span.day-label {
-    color: var(--accent);
-  }
+  .timeslot-head span.day-label { color: var(--accent); }
   .timeslot-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -504,9 +608,8 @@
     color: var(--ink);
     text-align: left;
     transition: all .15s;
-    position: relative;
   }
-  .slot:hover:not(.taken):not(.blocked) {
+  .slot:hover:not(.taken) {
     border-color: var(--accent);
     color: var(--accent);
   }
@@ -524,21 +627,23 @@
     margin-top: 2px;
   }
   .slot.selected small { color: rgba(13,13,13,0.7); }
-  .slot.taken, .slot.blocked {
+  .slot.taken {
     opacity: 0.35;
     cursor: not-allowed;
     text-decoration: line-through;
   }
-  .lunch-note {
+  .hours-note {
     margin-top: 16px;
     padding: 12px 14px;
-    background: rgba(251, 191, 36, 0.06);
-    border-left: 2px solid var(--warning);
+    background: rgba(101, 212, 114, 0.05);
+    border-left: 2px solid var(--ok);
     font-size: 11px;
     color: var(--ink-dim);
     line-height: 1.6;
   }
+  .hours-note b { color: var(--ok); }
 
+  /* Form */
   .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -562,10 +667,7 @@
     font-size: 14px;
     transition: border-color .15s;
   }
-  .field input:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
+  .field input:focus { outline: none; border-color: var(--accent); }
   .field input::placeholder { color: var(--ink-faint); }
   .vehicle-row {
     grid-column: 1 / -1;
@@ -574,9 +676,8 @@
     gap: 12px;
   }
 
-  .pay-wrap {
-    max-width: 540px;
-  }
+  /* Payment */
+  .pay-wrap { max-width: 540px; }
   .pay-card {
     background: var(--panel);
     border: 1px solid var(--rule);
@@ -593,10 +694,7 @@
     margin-bottom: 24px;
     text-transform: uppercase;
   }
-  .stripe-badge::before {
-    content: '🔒';
-    font-size: 12px;
-  }
+  .stripe-badge::before { content: '🔒'; font-size: 12px; }
   .card-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -622,13 +720,14 @@
     transition: all .2s;
     font-weight: 900;
   }
+  html[lang="zh"] .btn { font-family: 'Noto Sans SC', sans-serif; font-weight: 900; }
+  html[lang="ko"] .btn { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; }
+  html[lang="ja"] .btn { font-family: 'Noto Sans JP', sans-serif; font-weight: 900; }
   .btn-primary {
     background: var(--accent);
     color: var(--bg);
   }
-  .btn-primary:hover:not(:disabled) {
-    background: var(--ink);
-  }
+  .btn-primary:hover:not(:disabled) { background: var(--ink); }
   .btn-primary:disabled {
     background: var(--rule);
     color: var(--ink-faint);
@@ -639,10 +738,7 @@
     color: var(--ink-dim);
     border: 1px solid var(--rule);
   }
-  .btn-ghost:hover {
-    color: var(--ink);
-    border-color: var(--ink);
-  }
+  .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
 
   .aside-title {
     font-size: 11px;
@@ -676,10 +772,14 @@
   }
   .summary-val {
     font-family: 'Archivo Black', sans-serif;
-    font-size: 18px;
-    line-height: 1.2;
+    font-size: 17px;
+    line-height: 1.25;
     text-transform: uppercase;
   }
+  html[lang="zh"] .summary-val { font-family: 'Noto Sans SC', sans-serif; font-weight: 900; }
+  html[lang="ko"] .summary-val { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; }
+  html[lang="ja"] .summary-val { font-family: 'Noto Sans JP', sans-serif; font-weight: 900; }
+
   .summary-val.empty {
     font-family: 'Instrument Serif', serif;
     font-style: italic;
@@ -725,7 +825,7 @@
   }
   .price-total .amount {
     font-family: 'Archivo Black', sans-serif;
-    font-size: 32px;
+    font-size: 30px;
     color: var(--accent);
   }
 
@@ -754,6 +854,10 @@
     line-height: 0.95;
     margin-bottom: 20px;
   }
+  html[lang="zh"] .success-screen h1 { font-family: 'Noto Sans SC', sans-serif; font-weight: 900; }
+  html[lang="ko"] .success-screen h1 { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; }
+  html[lang="ja"] .success-screen h1 { font-family: 'Noto Sans JP', sans-serif; font-weight: 900; }
+
   .success-screen h1 em {
     font-family: 'Instrument Serif', serif;
     font-style: italic;
@@ -771,9 +875,7 @@
     color: var(--accent);
   }
 
-  .step-content {
-    animation: fade-in .4s ease-out;
-  }
+  .step-content { animation: fade-in .4s ease-out; }
   @keyframes fade-in {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -788,7 +890,7 @@
       border-top: 1px solid var(--rule);
     }
     main { padding: 40px 28px 60px; border-right: none; }
-    header { padding: 18px 24px; }
+    header { padding: 18px 24px; flex-wrap: wrap; }
     .header-meta { display: none; }
     .datetime-wrap { grid-template-columns: 1fr; gap: 32px; }
     .city-grid { grid-template-columns: 1fr 1fr; }
@@ -800,12 +902,14 @@
     .stepper { flex-direction: column; }
     .step-pill { border-right: none; border-bottom: 1px solid var(--rule); }
     .step-pill:last-child { border-bottom: none; }
+    .service-grid { grid-template-columns: 1fr; }
     .city-grid { grid-template-columns: 1fr; }
     .timeslot-grid { grid-template-columns: 1fr; }
     main { padding: 28px 18px 48px; }
     aside { padding: 32px 24px; }
     .actions { flex-direction: column-reverse; gap: 12px; }
     .actions .btn { width: 100%; }
+    .brand-tag { display: none; }
   }
 </style>
 </head>
@@ -815,66 +919,598 @@
   <div class="brand">
     <div class="brand-mark"></div>
     <span>SWAPYYC</span>
-    <span class="brand-tag">SEASONAL · TIRE · CHANGE</span>
+    <span class="brand-tag" data-i18n="brandTag">MOBILE · TIRE · SERVICE</span>
   </div>
-  <div class="header-meta">
-    <span>EST <b>2019</b></span>
-    <span>OPS <b>YYC</b></span>
-    <span>STATUS <b style="color:var(--ok)">● OPEN</b></span>
+
+  <div class="header-right">
+    <div class="header-meta">
+      <span data-i18n="metaEst">EST <b>2019</b></span>
+      <span data-i18n="metaOps">OPS <b>YYC</b></span>
+      <span><span data-i18n="metaStatus">STATUS</span> <b style="color:var(--ok)">● <span data-i18n="metaOpen">OPEN</span></b></span>
+    </div>
+
+    <div class="lang-toggle">
+      <button class="lang-btn" id="langBtn"><span id="langLabel">EN</span></button>
+      <div class="lang-menu" id="langMenu">
+        <button data-lang="en" class="active">English <span class="code">EN</span></button>
+        <button data-lang="zh">中文 <span class="code">ZH</span></button>
+        <button data-lang="ko">한국어 <span class="code">KO</span></button>
+        <button data-lang="ja">日本語 <span class="code">JA</span></button>
+        <button data-lang="es">Español <span class="code">ES</span></button>
+      </div>
+    </div>
   </div>
 </header>
 
 <div class="app">
   <main>
     <div class="stepper" id="stepper">
-      <div class="step-pill active" data-step="1"><span class="step-num"><span>1</span></span> Service</div>
-      <div class="step-pill" data-step="2"><span class="step-num"><span>2</span></span> Location</div>
-      <div class="step-pill" data-step="3"><span class="step-num"><span>3</span></span> Date / Time</div>
-      <div class="step-pill" data-step="4"><span class="step-num"><span>4</span></span> Your Info</div>
-      <div class="step-pill" data-step="5"><span class="step-num"><span>5</span></span> Payment</div>
+      <div class="step-pill active" data-step="1"><span class="step-num"><span>1</span></span> <span data-i18n="stepService">Service</span></div>
+      <div class="step-pill" data-step="2"><span class="step-num"><span>2</span></span> <span data-i18n="stepLocation">Location</span></div>
+      <div class="step-pill" data-step="3"><span class="step-num"><span>3</span></span> <span data-i18n="stepDateTime">Date / Time</span></div>
+      <div class="step-pill" data-step="4"><span class="step-num"><span>4</span></span> <span data-i18n="stepInfo">Your Info</span></div>
+      <div class="step-pill" data-step="5"><span class="step-num"><span>5</span></span> <span data-i18n="stepPayment">Payment</span></div>
     </div>
 
     <div id="step-container"></div>
 
     <div class="actions" id="actions">
-      <button class="btn btn-ghost" id="backBtn" style="visibility:hidden">← Back</button>
-      <button class="btn btn-primary" id="nextBtn" disabled>Continue →</button>
+      <button class="btn btn-ghost" id="backBtn" style="visibility:hidden"><span data-i18n="back">← Back</span></button>
+      <button class="btn btn-primary" id="nextBtn" disabled><span data-i18n="continue">Continue →</span></button>
     </div>
   </main>
 
   <aside>
-    <div class="aside-title">Booking Summary</div>
+    <div class="aside-title" data-i18n="summaryTitle">Booking Summary</div>
 
     <div class="summary-block">
-      <div class="summary-label">Service</div>
-      <div class="summary-val empty" id="sum-service">not selected</div>
+      <div class="summary-label" data-i18n="sumService">Service</div>
+      <div class="summary-val empty" id="sum-service" data-i18n="notSelected">not selected</div>
     </div>
     <div class="summary-block">
-      <div class="summary-label">City</div>
-      <div class="summary-val empty" id="sum-city">not selected</div>
+      <div class="summary-label" data-i18n="sumCity">City</div>
+      <div class="summary-val empty" id="sum-city" data-i18n="notSelected">not selected</div>
     </div>
     <div class="summary-block">
-      <div class="summary-label">Appointment</div>
-      <div class="summary-val empty" id="sum-when">not selected</div>
+      <div class="summary-label" data-i18n="sumWhen">Appointment</div>
+      <div class="summary-val empty" id="sum-when" data-i18n="notSelected">not selected</div>
     </div>
     <div class="summary-block">
-      <div class="summary-label">Vehicle</div>
-      <div class="summary-val empty" id="sum-vehicle">not entered</div>
+      <div class="summary-label" data-i18n="sumVehicle">Vehicle</div>
+      <div class="summary-val empty" id="sum-vehicle" data-i18n="notEntered">not entered</div>
     </div>
 
     <div class="price-block">
-      <div class="price-row"><span>Tire swap (mounted)</span><span>$80.00</span></div>
-      <div class="price-row"><span>GST (5%)</span><span>$4.00</span></div>
+      <div class="price-row"><span data-i18n="priceService">Service</span><span id="price-base">$0.00</span></div>
+      <div class="price-row"><span data-i18n="priceGst">GST (5%)</span><span id="price-gst">$0.00</span></div>
       <div class="price-total">
-        <span class="label">Total Due</span>
-        <span class="amount">$84.00</span>
+        <span class="label" data-i18n="priceTotal">Total Due</span>
+        <span class="amount" id="price-total-amt">$0.00</span>
       </div>
     </div>
   </aside>
 </div>
 
 <script>
+  // ============================================================
+  //  I18N
+  // ============================================================
+  const I18N = {
+    en: {
+      brandTag: 'MOBILE · TIRE · SERVICE',
+      metaEst: 'EST <b>2019</b>',
+      metaOps: 'OPS <b>YYC</b>',
+      metaStatus: 'STATUS',
+      metaOpen: 'OPEN',
+      stepService: 'Service',
+      stepLocation: 'Location',
+      stepDateTime: 'Date / Time',
+      stepInfo: 'Your Info',
+      stepPayment: 'Payment',
+      back: '← Back',
+      continue: 'Continue →',
+      summaryTitle: 'Booking Summary',
+      sumService: 'Service',
+      sumCity: 'City',
+      sumWhen: 'Appointment',
+      sumVehicle: 'Vehicle',
+      notSelected: 'not selected',
+      notEntered: 'not entered',
+      priceService: 'Service',
+      priceGst: 'GST (5%)',
+      priceTotal: 'Total Due',
+
+      step1Kicker: 'Step 01 / Service',
+      step1Title1: 'Pick your',
+      step1Title2: 'service',
+      step1Sub: 'Mobile tire service at your home or workplace. Pick what fits your ride.',
+      svc_swap_sedan: 'Mobile Tire Swap',
+      svc_swap_sedan_sub: 'Sedan',
+      svc_swap_suv: 'Mobile Tire Swap',
+      svc_swap_suv_sub: 'SUV / Truck',
+      svc_swap_two: 'Mobile Tire Swap',
+      svc_swap_two_sub: 'Two Cars',
+      svc_flat: 'Flat Tire Repair',
+      svc_flat_sub: 'Single Tire',
+      svc_per: 'per service',
+      requirement: '<b>REQUIREMENT —</b> For tire swaps, all tires must already be mounted on rims. We do not perform tire-only swaps (no bead breaking / machine mounting).',
+
+      step2Kicker: 'Step 02 / Location',
+      step2Title1: 'Where are',
+      step2Title2: 'you',
+      step2Title3: '?',
+      step2Sub: 'Currently servicing Calgary only. More cities rolling out next season.',
+      cityAvail: '● Available',
+      citySelected: '● Selected',
+      citySoon: 'Coming Soon',
+
+      step3Kicker: 'Step 03 / Schedule',
+      step3Title1: 'Pick a',
+      step3Title2: 'slot',
+      step3Sub: 'We operate Tuesday through Saturday, 9 AM to 3 PM. Each appointment is one hour.',
+      availTimes: 'Available Times',
+      noDate: 'Select a date to see available time slots.',
+      hoursNote: 'Hours: <b>Tue – Sat</b>, 9 AM – 3 PM. Closed Sunday & Monday.',
+      closedDay: 'Closed',
+      booked: 'BOOKED',
+
+      step4Kicker: 'Step 04 / Your Details',
+      step4Title1: 'Tell us',
+      step4Title2: 'about you',
+      step4Sub: 'We need to know where to roll up and which vehicle we are servicing.',
+      lblName: 'Full Name',
+      phName: 'Jane Doe',
+      lblAddress: 'Service Address (Calgary)',
+      phAddress: '123 Mountain View Rd SW, Calgary AB',
+      lblPhone: 'Phone Number',
+      phPhone: '+1 (587) 000-0000',
+      lblMake: 'Vehicle Make',
+      phMake: 'Toyota',
+      lblModel: 'Vehicle Model',
+      phModel: 'RAV4',
+      lblYear: 'Year',
+      phYear: '2021',
+      reminder: '<b>REMINDER —</b> For tire swaps, your seasonal tires must already be on rims and accessible at the service address.',
+
+      step5Kicker: 'Step 05 / Payment',
+      step5Title1: 'Lock',
+      step5Title2: 'it in',
+      step5Sub: 'Secure payment via Stripe. Your card is not charged until the service is complete.',
+      stripeBadge: 'SECURED BY STRIPE · PCI DSS',
+      lblCardName: 'Cardholder Name',
+      phCardName: 'Name on card',
+      lblCardNum: 'Card Number',
+      lblExp: 'Expiry',
+      lblCvc: 'CVC',
+      cancellation: '<b>CANCELLATION —</b> Free cancel or reschedule up to 24h before. No-shows charged $99.',
+      payBtn: 'Confirm & Pay',
+      continueToPay: 'Continue to Payment →',
+
+      successTitle1: "You're",
+      successTitle2: 'booked',
+      successMsg: 'Confirmation sent to your phone. We will text you when our tech is on the way on {date} at {time}.',
+      confirmLabel: 'CONFIRMATION'
+    },
+
+    zh: {
+      brandTag: '移动 · 轮胎 · 服务',
+      metaEst: '成立 <b>2019</b>',
+      metaOps: '运营 <b>YYC</b>',
+      metaStatus: '状态',
+      metaOpen: '营业中',
+      stepService: '服务',
+      stepLocation: '位置',
+      stepDateTime: '日期 / 时间',
+      stepInfo: '个人信息',
+      stepPayment: '付款',
+      back: '← 返回',
+      continue: '继续 →',
+      summaryTitle: '预约摘要',
+      sumService: '服务',
+      sumCity: '城市',
+      sumWhen: '预约',
+      sumVehicle: '车辆',
+      notSelected: '未选择',
+      notEntered: '未填写',
+      priceService: '服务',
+      priceGst: 'GST 税 (5%)',
+      priceTotal: '应付总额',
+
+      step1Kicker: '第 01 步 / 服务',
+      step1Title1: '选择您的',
+      step1Title2: '服务',
+      step1Sub: '上门提供轮胎服务,无论您在家中或公司。选择适合您车辆的选项。',
+      svc_swap_sedan: '上门换季轮胎',
+      svc_swap_sedan_sub: '轿车',
+      svc_swap_suv: '上门换季轮胎',
+      svc_swap_suv_sub: 'SUV / 卡车',
+      svc_swap_two: '上门换季轮胎',
+      svc_swap_two_sub: '两辆车',
+      svc_flat: '爆胎维修',
+      svc_flat_sub: '单条轮胎',
+      svc_per: '每次服务',
+      requirement: '<b>要求 —</b> 换季轮胎服务要求所有轮胎已安装在轮毂上。我们不提供轮胎与轮毂分离的安装服务。',
+
+      step2Kicker: '第 02 步 / 位置',
+      step2Title1: '您在',
+      step2Title2: '哪里',
+      step2Title3: '?',
+      step2Sub: '目前仅服务卡尔加里 (Calgary)。其他城市将于下个季度陆续开通。',
+      cityAvail: '● 可预约',
+      citySelected: '● 已选择',
+      citySoon: '即将开通',
+
+      step3Kicker: '第 03 步 / 时间安排',
+      step3Title1: '选择',
+      step3Title2: '时段',
+      step3Sub: '营业时间:周二至周六,上午 9 点至下午 3 点。每次预约时长 1 小时。',
+      availTimes: '可预约时段',
+      noDate: '请先选择日期以查看可预约时段。',
+      hoursNote: '营业时间:<b>周二 – 周六</b>,上午 9 点 – 下午 3 点。周日及周一休息。',
+      closedDay: '休息',
+      booked: '已预约',
+
+      step4Kicker: '第 04 步 / 您的信息',
+      step4Title1: '告诉我们',
+      step4Title2: '关于您',
+      step4Sub: '我们需要知道上门地点以及为哪辆车提供服务。',
+      lblName: '姓名',
+      phName: '张三',
+      lblAddress: '服务地址 (卡尔加里)',
+      phAddress: '123 Mountain View Rd SW, Calgary AB',
+      lblPhone: '电话号码',
+      phPhone: '+1 (587) 000-0000',
+      lblMake: '汽车品牌',
+      phMake: '丰田',
+      lblModel: '车型',
+      phModel: 'RAV4',
+      lblYear: '年份',
+      phYear: '2021',
+      reminder: '<b>提醒 —</b> 换季轮胎服务要求您的季节性轮胎已安装在轮毂上,并可在服务地址取用。',
+
+      step5Kicker: '第 05 步 / 付款',
+      step5Title1: '确认',
+      step5Title2: '预约',
+      step5Sub: '通过 Stripe 安全付款。服务完成后才会扣款。',
+      stripeBadge: '由 STRIPE 加密 · PCI DSS 认证',
+      lblCardName: '持卡人姓名',
+      phCardName: '卡上姓名',
+      lblCardNum: '卡号',
+      lblExp: '有效期',
+      lblCvc: 'CVC',
+      cancellation: '<b>取消政策 —</b> 服务前 24 小时内可免费取消或改期。未到场将收取 $99 费用。',
+      payBtn: '确认并付款',
+      continueToPay: '继续付款 →',
+
+      successTitle1: '您已',
+      successTitle2: '预约成功',
+      successMsg: '确认信息已发送至您的手机。我们将于 {date} {time} 派遣技师上门时发短信通知您。',
+      confirmLabel: '预约编号'
+    },
+
+    ko: {
+      brandTag: '출장 · 타이어 · 서비스',
+      metaEst: '설립 <b>2019</b>',
+      metaOps: '운영 <b>YYC</b>',
+      metaStatus: '상태',
+      metaOpen: '영업 중',
+      stepService: '서비스',
+      stepLocation: '위치',
+      stepDateTime: '날짜 / 시간',
+      stepInfo: '고객 정보',
+      stepPayment: '결제',
+      back: '← 뒤로',
+      continue: '계속 →',
+      summaryTitle: '예약 요약',
+      sumService: '서비스',
+      sumCity: '도시',
+      sumWhen: '예약',
+      sumVehicle: '차량',
+      notSelected: '선택되지 않음',
+      notEntered: '입력되지 않음',
+      priceService: '서비스',
+      priceGst: 'GST (5%)',
+      priceTotal: '총 결제 금액',
+
+      step1Kicker: '단계 01 / 서비스',
+      step1Title1: '서비스를',
+      step1Title2: '선택하세요',
+      step1Sub: '자택 또는 회사로 찾아가는 출장 타이어 서비스입니다. 차량에 맞는 옵션을 선택하세요.',
+      svc_swap_sedan: '계절 타이어 교체',
+      svc_swap_sedan_sub: '세단',
+      svc_swap_suv: '계절 타이어 교체',
+      svc_swap_suv_sub: 'SUV / 트럭',
+      svc_swap_two: '계절 타이어 교체',
+      svc_swap_two_sub: '두 대',
+      svc_flat: '펑크 수리',
+      svc_flat_sub: '단일 타이어',
+      svc_per: '회당',
+      requirement: '<b>필수 사항 —</b> 타이어 교체 서비스는 모든 타이어가 휠에 장착된 상태여야 합니다. 휠 분리/장착은 제공하지 않습니다.',
+
+      step2Kicker: '단계 02 / 위치',
+      step2Title1: '어디에',
+      step2Title2: '계신가요',
+      step2Title3: '?',
+      step2Sub: '현재 캘거리 (Calgary) 지역만 서비스합니다. 다음 시즌부터 다른 도시도 운영 예정입니다.',
+      cityAvail: '● 예약 가능',
+      citySelected: '● 선택됨',
+      citySoon: '곧 오픈',
+
+      step3Kicker: '단계 03 / 일정',
+      step3Title1: '시간을',
+      step3Title2: '선택하세요',
+      step3Sub: '운영 시간: 화요일–토요일, 오전 9시–오후 3시. 예약당 1시간입니다.',
+      availTimes: '예약 가능 시간',
+      noDate: '날짜를 선택하면 예약 가능 시간이 표시됩니다.',
+      hoursNote: '운영 시간: <b>화 – 토</b>, 오전 9시 – 오후 3시. 일요일 및 월요일 휴무.',
+      closedDay: '휴무',
+      booked: '예약됨',
+
+      step4Kicker: '단계 04 / 고객 정보',
+      step4Title1: '정보를',
+      step4Title2: '알려주세요',
+      step4Sub: '방문 주소와 서비스 받을 차량 정보를 입력해주세요.',
+      lblName: '이름',
+      phName: '홍길동',
+      lblAddress: '서비스 주소 (캘거리)',
+      phAddress: '123 Mountain View Rd SW, Calgary AB',
+      lblPhone: '전화번호',
+      phPhone: '+1 (587) 000-0000',
+      lblMake: '차량 제조사',
+      phMake: 'Toyota',
+      lblModel: '모델',
+      phModel: 'RAV4',
+      lblYear: '연식',
+      phYear: '2021',
+      reminder: '<b>안내 —</b> 타이어 교체 서비스는 계절 타이어가 휠에 장착된 상태로 서비스 주소에 준비되어 있어야 합니다.',
+
+      step5Kicker: '단계 05 / 결제',
+      step5Title1: '예약',
+      step5Title2: '확정',
+      step5Sub: 'Stripe를 통한 안전한 결제. 서비스 완료 후에만 청구됩니다.',
+      stripeBadge: 'STRIPE 보안 · PCI DSS',
+      lblCardName: '카드 소유자 이름',
+      phCardName: '카드 명의',
+      lblCardNum: '카드 번호',
+      lblExp: '유효기간',
+      lblCvc: 'CVC',
+      cancellation: '<b>취소 정책 —</b> 24시간 전까지 무료 취소 및 변경. 노쇼 시 $99 청구.',
+      payBtn: '확정 및 결제',
+      continueToPay: '결제로 계속 →',
+
+      successTitle1: '예약이',
+      successTitle2: '완료되었습니다',
+      successMsg: '확인 메시지가 휴대폰으로 전송되었습니다. {date} {time}에 기사가 출발할 때 문자를 보내드립니다.',
+      confirmLabel: '예약 번호'
+    },
+
+    ja: {
+      brandTag: '出張 · タイヤ · サービス',
+      metaEst: '設立 <b>2019</b>',
+      metaOps: '運営 <b>YYC</b>',
+      metaStatus: 'ステータス',
+      metaOpen: '営業中',
+      stepService: 'サービス',
+      stepLocation: '場所',
+      stepDateTime: '日時',
+      stepInfo: 'お客様情報',
+      stepPayment: 'お支払い',
+      back: '← 戻る',
+      continue: '次へ →',
+      summaryTitle: '予約内容',
+      sumService: 'サービス',
+      sumCity: '都市',
+      sumWhen: '予約',
+      sumVehicle: '車両',
+      notSelected: '未選択',
+      notEntered: '未入力',
+      priceService: 'サービス',
+      priceGst: 'GST (5%)',
+      priceTotal: '合計金額',
+
+      step1Kicker: 'ステップ 01 / サービス',
+      step1Title1: 'サービスを',
+      step1Title2: 'お選びください',
+      step1Sub: 'ご自宅または職場までお伺いする出張タイヤサービス。お車に合うプランをお選びください。',
+      svc_swap_sedan: '季節タイヤ交換',
+      svc_swap_sedan_sub: 'セダン',
+      svc_swap_suv: '季節タイヤ交換',
+      svc_swap_suv_sub: 'SUV / トラック',
+      svc_swap_two: '季節タイヤ交換',
+      svc_swap_two_sub: '2台',
+      svc_flat: 'パンク修理',
+      svc_flat_sub: 'タイヤ 1 本',
+      svc_per: '1 回あたり',
+      requirement: '<b>必須条件 —</b> タイヤ交換は、すべてのタイヤがホイールに装着済みである必要があります。ホイール分離・組付け作業は行いません。',
+
+      step2Kicker: 'ステップ 02 / 場所',
+      step2Title1: 'どちらに',
+      step2Title2: 'いらっしゃいますか',
+      step2Title3: '?',
+      step2Sub: '現在カルガリー (Calgary) のみ対応しています。次シーズンより他都市にも展開予定です。',
+      cityAvail: '● 予約可能',
+      citySelected: '● 選択中',
+      citySoon: '近日開始',
+
+      step3Kicker: 'ステップ 03 / 日時',
+      step3Title1: '時間を',
+      step3Title2: 'お選びください',
+      step3Sub: '営業日:火曜~土曜、午前 9 時~午後 3 時。各予約は 1 時間です。',
+      availTimes: '予約可能時間',
+      noDate: '日付を選択すると予約可能時間が表示されます。',
+      hoursNote: '営業時間:<b>火 – 土</b>、午前 9 時 – 午後 3 時。日曜・月曜定休。',
+      closedDay: '定休',
+      booked: '予約済み',
+
+      step4Kicker: 'ステップ 04 / お客様情報',
+      step4Title1: 'お客様情報を',
+      step4Title2: 'ご記入ください',
+      step4Sub: 'ご訪問先の住所と、対象のお車の情報をお知らせください。',
+      lblName: 'お名前',
+      phName: '山田 太郎',
+      lblAddress: 'ご訪問先住所 (カルガリー)',
+      phAddress: '123 Mountain View Rd SW, Calgary AB',
+      lblPhone: '電話番号',
+      phPhone: '+1 (587) 000-0000',
+      lblMake: 'メーカー',
+      phMake: 'トヨタ',
+      lblModel: 'モデル',
+      phModel: 'RAV4',
+      lblYear: '年式',
+      phYear: '2021',
+      reminder: '<b>ご注意 —</b> タイヤ交換は、季節タイヤがホイールに装着済みの状態で、ご訪問先にてご準備ください。',
+
+      step5Kicker: 'ステップ 05 / お支払い',
+      step5Title1: 'ご予約',
+      step5Title2: '確定',
+      step5Sub: 'Stripe による安全なお支払い。サービス完了後にご請求いたします。',
+      stripeBadge: 'STRIPE による暗号化 · PCI DSS',
+      lblCardName: 'カード名義人',
+      phCardName: 'カード上のお名前',
+      lblCardNum: 'カード番号',
+      lblExp: '有効期限',
+      lblCvc: 'CVC',
+      cancellation: '<b>キャンセル規定 —</b> 24 時間前までは無料でキャンセル・変更可能。無断キャンセルは $99 を申し受けます。',
+      payBtn: '確定して支払う',
+      continueToPay: '支払いへ進む →',
+
+      successTitle1: 'ご予約',
+      successTitle2: '完了しました',
+      successMsg: '確認メッセージをお客様の携帯電話にお送りしました。{date} {time}に技術スタッフが出発する際にメッセージをお送りします。',
+      confirmLabel: '予約番号'
+    },
+
+    es: {
+      brandTag: 'SERVICIO · MÓVIL · DE NEUMÁTICOS',
+      metaEst: 'DESDE <b>2019</b>',
+      metaOps: 'BASE <b>YYC</b>',
+      metaStatus: 'ESTADO',
+      metaOpen: 'ABIERTO',
+      stepService: 'Servicio',
+      stepLocation: 'Ubicación',
+      stepDateTime: 'Fecha / Hora',
+      stepInfo: 'Tus Datos',
+      stepPayment: 'Pago',
+      back: '← Atrás',
+      continue: 'Continuar →',
+      summaryTitle: 'Resumen de Reserva',
+      sumService: 'Servicio',
+      sumCity: 'Ciudad',
+      sumWhen: 'Cita',
+      sumVehicle: 'Vehículo',
+      notSelected: 'no seleccionado',
+      notEntered: 'no ingresado',
+      priceService: 'Servicio',
+      priceGst: 'GST (5%)',
+      priceTotal: 'Total a Pagar',
+
+      step1Kicker: 'Paso 01 / Servicio',
+      step1Title1: 'Elige tu',
+      step1Title2: 'servicio',
+      step1Sub: 'Servicio móvil de neumáticos en tu casa o trabajo. Elige el que se ajuste a tu vehículo.',
+      svc_swap_sedan: 'Cambio de Neumáticos',
+      svc_swap_sedan_sub: 'Sedán',
+      svc_swap_suv: 'Cambio de Neumáticos',
+      svc_swap_suv_sub: 'SUV / Camioneta',
+      svc_swap_two: 'Cambio de Neumáticos',
+      svc_swap_two_sub: 'Dos Autos',
+      svc_flat: 'Reparación de Pinchazo',
+      svc_flat_sub: 'Un Neumático',
+      svc_per: 'por servicio',
+      requirement: '<b>REQUISITO —</b> Para cambios estacionales, todos los neumáticos deben estar ya montados en llantas. No realizamos desmontaje/montaje en máquina.',
+
+      step2Kicker: 'Paso 02 / Ubicación',
+      step2Title1: '¿Dónde',
+      step2Title2: 'estás',
+      step2Title3: '?',
+      step2Sub: 'Actualmente solo damos servicio en Calgary. Más ciudades la próxima temporada.',
+      cityAvail: '● Disponible',
+      citySelected: '● Seleccionado',
+      citySoon: 'Próximamente',
+
+      step3Kicker: 'Paso 03 / Horario',
+      step3Title1: 'Elige un',
+      step3Title2: 'horario',
+      step3Sub: 'Operamos de martes a sábado, de 9 AM a 3 PM. Cada cita dura una hora.',
+      availTimes: 'Horarios Disponibles',
+      noDate: 'Selecciona una fecha para ver los horarios disponibles.',
+      hoursNote: 'Horario: <b>Mar – Sáb</b>, 9 AM – 3 PM. Cerrado domingos y lunes.',
+      closedDay: 'Cerrado',
+      booked: 'RESERVADO',
+
+      step4Kicker: 'Paso 04 / Tus Datos',
+      step4Title1: 'Cuéntanos',
+      step4Title2: 'sobre ti',
+      step4Sub: 'Necesitamos saber dónde vamos y qué vehículo atenderemos.',
+      lblName: 'Nombre Completo',
+      phName: 'Juan Pérez',
+      lblAddress: 'Dirección de Servicio (Calgary)',
+      phAddress: '123 Mountain View Rd SW, Calgary AB',
+      lblPhone: 'Teléfono',
+      phPhone: '+1 (587) 000-0000',
+      lblMake: 'Marca del Vehículo',
+      phMake: 'Toyota',
+      lblModel: 'Modelo',
+      phModel: 'RAV4',
+      lblYear: 'Año',
+      phYear: '2021',
+      reminder: '<b>RECORDATORIO —</b> Para cambios estacionales, los neumáticos deben estar montados en llantas y disponibles en la dirección del servicio.',
+
+      step5Kicker: 'Paso 05 / Pago',
+      step5Title1: 'Confirma',
+      step5Title2: 'tu reserva',
+      step5Sub: 'Pago seguro con Stripe. No se cobra hasta completar el servicio.',
+      stripeBadge: 'PROTEGIDO POR STRIPE · PCI DSS',
+      lblCardName: 'Nombre del Titular',
+      phCardName: 'Nombre en la tarjeta',
+      lblCardNum: 'Número de Tarjeta',
+      lblExp: 'Vencimiento',
+      lblCvc: 'CVC',
+      cancellation: '<b>CANCELACIÓN —</b> Cancela o reagenda gratis hasta 24 h antes. Las ausencias se cobran $99.',
+      payBtn: 'Confirmar y Pagar',
+      continueToPay: 'Continuar al Pago →',
+
+      successTitle1: 'Tu cita',
+      successTitle2: 'está confirmada',
+      successMsg: 'Confirmación enviada a tu teléfono. Te avisaremos cuando nuestro técnico esté en camino el {date} a las {time}.',
+      confirmLabel: 'CONFIRMACIÓN'
+    }
+  };
+
+  // Day name translations for calendar / summary
+  const DAY_NAMES = {
+    en: { full: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], short: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], abbr: ['SUN','MON','TUE','WED','THU','FRI','SAT'] },
+    zh: { full: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'], short: ['周日','周一','周二','周三','周四','周五','周六'], abbr: ['日','一','二','三','四','五','六'] },
+    ko: { full: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'], short: ['일','월','화','수','목','금','토'], abbr: ['일','월','화','수','목','금','토'] },
+    ja: { full: ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'], short: ['日','月','火','水','木','金','土'], abbr: ['日','月','火','水','木','金','土'] },
+    es: { full: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'], short: ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'], abbr: ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'] }
+  };
+
+  const MONTH_NAMES = {
+    en: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    zh: ['1 月','2 月','3 月','4 月','5 月','6 月','7 月','8 月','9 月','10 月','11 月','12 月'],
+    ko: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+    ja: ['1 月','2 月','3 月','4 月','5 月','6 月','7 月','8 月','9 月','10 月','11 月','12 月'],
+    es: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+  };
+
+  function t(key) { return I18N[state.lang][key] || I18N.en[key] || key; }
+
+  // ============================================================
+  //  SERVICES
+  // ============================================================
+  const SERVICES = {
+    'swap_sedan': { price: 89, icon: '◐', nameKey: 'svc_swap_sedan', subKey: 'svc_swap_sedan_sub' },
+    'swap_suv':   { price: 99, icon: '◑', nameKey: 'svc_swap_suv',   subKey: 'svc_swap_suv_sub' },
+    'swap_two':   { price: 169, icon: '◉', nameKey: 'svc_swap_two', subKey: 'svc_swap_two_sub' },
+    'flat':       { price: 89, icon: '✕', nameKey: 'svc_flat',       subKey: 'svc_flat_sub' }
+  };
+
+  // ============================================================
+  //  STATE
+  // ============================================================
   const state = {
+    lang: 'en',
     step: 1,
     service: null,
     city: null,
@@ -885,8 +1521,9 @@
     bookings: {}
   };
 
-  const PRICE = 80;
-
+  // ============================================================
+  //  UTILS
+  // ============================================================
   function toAmPm(h) {
     const period = h >= 12 ? 'PM' : 'AM';
     const hour = h === 0 ? 12 : (h > 12 ? h - 12 : h);
@@ -895,14 +1532,85 @@
   function ymd(d) {
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
-  function isWeekend(d) {
-    return d.getDay() === 0 || d.getDay() === 6;
+  // Open Tue (2), Wed (3), Thu (4), Fri (5), Sat (6). Closed Sun (0), Mon (1).
+  function isOpenDay(d) {
+    const dow = d.getDay();
+    return dow >= 2 && dow <= 6;
   }
   function slotsFor(d) {
-    if (isWeekend(d)) return [9, 10, 11, 12];
-    return [11, 12, 13, 14, 15, 16, 17, 18];
+    // 9, 10, 11, 12, 13, 14 (last appt starts 2 PM, ends 3 PM)
+    return [9, 10, 11, 12, 13, 14];
   }
 
+  function fmtDate(d, style) {
+    // style: 'long' (Tuesday, January 5) or 'short' (Tue, Jan 5)
+    const lang = state.lang;
+    const dayName = style === 'long' ? DAY_NAMES[lang].full[d.getDay()] : DAY_NAMES[lang].short[d.getDay()];
+    const month = MONTH_NAMES[lang][d.getMonth()];
+    const date = d.getDate();
+    if (lang === 'zh' || lang === 'ja') {
+      return `${month}${date}日 ${dayName}`;
+    }
+    if (lang === 'ko') {
+      return `${month} ${date}일 ${dayName}`;
+    }
+    return `${dayName}, ${month} ${date}`;
+  }
+
+  function fmtMonthYear(d) {
+    const lang = state.lang;
+    const month = MONTH_NAMES[lang][d.getMonth()];
+    const year = d.getFullYear();
+    if (lang === 'zh' || lang === 'ja') return `${year} ${month}`;
+    if (lang === 'ko') return `${year}년 ${month}`;
+    return `${month} ${year}`;
+  }
+
+  // ============================================================
+  //  LANGUAGE
+  // ============================================================
+  function applyI18n() {
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const val = t(key);
+      if (val.includes('<')) el.innerHTML = val;
+      else el.textContent = val;
+    });
+    document.getElementById('langLabel').textContent = state.lang.toUpperCase();
+    document.querySelectorAll('#langMenu button').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === state.lang);
+    });
+  }
+
+  function setLanguage(lang) {
+    state.lang = lang;
+    applyI18n();
+    render(); // re-render current step in new language
+  }
+
+  // ============================================================
+  //  PRICE
+  // ============================================================
+  function getServicePrice() {
+    return state.service ? SERVICES[state.service].price : 0;
+  }
+  function updatePriceBlock() {
+    const base = getServicePrice();
+    const gst = +(base * 0.05).toFixed(2);
+    const total = +(base + gst).toFixed(2);
+    document.getElementById('price-base').textContent = `$${base.toFixed(2)}`;
+    document.getElementById('price-gst').textContent = `$${gst.toFixed(2)}`;
+    document.getElementById('price-total-amt').textContent = `$${total.toFixed(2)}`;
+  }
+  function totalDue() {
+    const base = getServicePrice();
+    return +(base * 1.05).toFixed(2);
+  }
+
+  // ============================================================
+  //  RENDER
+  // ============================================================
   function render() {
     document.querySelectorAll('.step-pill').forEach(el => {
       const n = parseInt(el.dataset.step, 10);
@@ -923,20 +1631,27 @@
     if (state.step === 5) renderStep5(wrap);
     if (state.step === 6) renderSuccess(wrap);
 
-    document.getElementById('sum-service').textContent = state.service ? 'Seasonal Tire Swap' : 'not selected';
-    document.getElementById('sum-service').classList.toggle('empty', !state.service);
+    // Sidebar
+    const svcEl = document.getElementById('sum-service');
+    if (state.service) {
+      const s = SERVICES[state.service];
+      svcEl.innerHTML = `${t(s.nameKey)} <small>${t(s.subKey)} · $${s.price}</small>`;
+      svcEl.classList.remove('empty');
+    } else {
+      svcEl.textContent = t('notSelected');
+      svcEl.classList.add('empty');
+    }
 
     const cityEl = document.getElementById('sum-city');
-    cityEl.textContent = state.city ? 'Calgary, AB' : 'not selected';
+    cityEl.textContent = state.city ? 'Calgary, AB' : t('notSelected');
     cityEl.classList.toggle('empty', !state.city);
 
     const whenEl = document.getElementById('sum-when');
     if (state.date && state.time !== null) {
-      const dateStr = state.date.toLocaleDateString('en-CA', { weekday: 'short', month: 'short', day: 'numeric' });
-      whenEl.innerHTML = `${dateStr} <small>${toAmPm(state.time)} — ${toAmPm(state.time+1)}</small>`;
+      whenEl.innerHTML = `${fmtDate(state.date,'short')} <small>${toAmPm(state.time)} — ${toAmPm(state.time+1)}</small>`;
       whenEl.classList.remove('empty');
     } else {
-      whenEl.textContent = 'not selected';
+      whenEl.textContent = t('notSelected');
       whenEl.classList.add('empty');
     }
 
@@ -945,10 +1660,13 @@
       vehEl.textContent = `${state.info.vYear || ''} ${state.info.vMake} ${state.info.vModel}`.trim();
       vehEl.classList.remove('empty');
     } else {
-      vehEl.textContent = 'not entered';
+      vehEl.textContent = t('notEntered');
       vehEl.classList.add('empty');
     }
 
+    updatePriceBlock();
+
+    // Buttons
     const backBtn = document.getElementById('backBtn');
     const nextBtn = document.getElementById('nextBtn');
     const actions = document.getElementById('actions');
@@ -960,11 +1678,13 @@
     actions.style.display = 'flex';
 
     backBtn.style.visibility = state.step === 1 ? 'hidden' : 'visible';
+    backBtn.querySelector('span').textContent = t('back');
     nextBtn.disabled = !canContinue();
 
-    if (state.step === 5) nextBtn.textContent = 'Confirm & Pay $84.00 →';
-    else if (state.step === 4) nextBtn.textContent = 'Continue to Payment →';
-    else nextBtn.textContent = 'Continue →';
+    const nextSpan = nextBtn.querySelector('span');
+    if (state.step === 5) nextSpan.textContent = `${t('payBtn')} $${totalDue().toFixed(2)} →`;
+    else if (state.step === 4) nextSpan.textContent = t('continueToPay');
+    else nextSpan.textContent = t('continue');
   }
 
   function canContinue() {
@@ -982,65 +1702,72 @@
     return false;
   }
 
+  // ============================================================
+  //  STEP 1 — Service
+  // ============================================================
   function renderStep1(root) {
-    root.innerHTML = `
-      <div class="section-head">
-        <div class="section-kicker">Step 01 / Service</div>
-        <h1 class="section-title">Pick your <em>service</em></h1>
-        <p class="section-sub">We do one thing and do it right. Seasonal swap, on-rim only — winter to summer, summer to winter.</p>
-      </div>
-
-      <div class="service-card ${state.service === 'swap' ? 'selected' : ''}" id="serviceCard">
-        <div class="service-head">
-          <div>
-            <div class="service-title">Seasonal<br>Tire Swap</div>
-          </div>
+    const cards = ['swap_sedan','swap_suv','swap_two','flat'].map(key => {
+      const s = SERVICES[key];
+      const sel = state.service === key ? 'selected' : '';
+      return `
+        <div class="service-card ${sel}" data-svc="${key}">
+          <div class="service-icon">${s.icon}</div>
+          <div class="service-name">${t(s.nameKey)}</div>
+          <div class="service-sub">${t(s.subKey)}</div>
           <div class="service-price">
-            $80<small>+ GST · per vehicle</small>
+            <span class="amt">$${s.price}</span>
+            <span class="note">${t('svc_per')}</span>
           </div>
         </div>
-        <p class="service-desc">Full removal of your current set, mounting of your seasonal set, torqued to spec. We come to you.</p>
-        <ul class="service-bullets">
-          <li>4 tires removed and replaced</li>
-          <li>Torqued to manufacturer specification</li>
-          <li>Approx. 45 minutes on site</li>
-          <li>Mobile service across Calgary</li>
-        </ul>
+      `;
+    }).join('');
+
+    root.innerHTML = `
+      <div class="section-head">
+        <div class="section-kicker">${t('step1Kicker')}</div>
+        <h1 class="section-title">${t('step1Title1')} <em>${t('step1Title2')}</em></h1>
+        <p class="section-sub">${t('step1Sub')}</p>
       </div>
 
-      <div class="requirement-banner">
-        <b>REQUIREMENT —</b> All tires must already be mounted on rims. We do not perform tire-only swaps (no bead breaking / machine mounting).
-      </div>
+      <div class="service-grid">${cards}</div>
+
+      <div class="requirement-banner">${t('requirement')}</div>
     `;
-    document.getElementById('serviceCard').addEventListener('click', () => {
-      state.service = 'swap';
-      render();
+
+    root.querySelectorAll('.service-card').forEach(card => {
+      card.addEventListener('click', () => {
+        state.service = card.dataset.svc;
+        render();
+      });
     });
   }
 
+  // ============================================================
+  //  STEP 2 — City
+  // ============================================================
   function renderStep2(root) {
     root.innerHTML = `
       <div class="section-head">
-        <div class="section-kicker">Step 02 / Location</div>
-        <h1 class="section-title">Where are <em>you</em>?</h1>
-        <p class="section-sub">Currently servicing Calgary only. More cities rolling out next season.</p>
+        <div class="section-kicker">${t('step2Kicker')}</div>
+        <h1 class="section-title">${t('step2Title1')} <em>${t('step2Title2')}</em>${t('step2Title3')}</h1>
+        <p class="section-sub">${t('step2Sub')}</p>
       </div>
 
       <div class="city-grid">
         <div class="city-card available ${state.city === 'calgary' ? 'selected' : ''}" data-city="calgary">
           <div class="city-name">Calgary</div>
           <div class="city-prov">Alberta, CA</div>
-          <span class="city-status">${state.city === 'calgary' ? '● Selected' : '● Available'}</span>
+          <span class="city-status">${state.city === 'calgary' ? t('citySelected') : t('cityAvail')}</span>
         </div>
         <div class="city-card unavailable">
           <div class="city-name">Edmonton</div>
           <div class="city-prov">Alberta, CA</div>
-          <span class="city-status">Coming Soon</span>
+          <span class="city-status">${t('citySoon')}</span>
         </div>
         <div class="city-card unavailable">
           <div class="city-name">Red Deer</div>
           <div class="city-prov">Alberta, CA</div>
-          <span class="city-status">Coming Soon</span>
+          <span class="city-status">${t('citySoon')}</span>
         </div>
       </div>
     `;
@@ -1050,15 +1777,18 @@
     });
   }
 
+  // ============================================================
+  //  STEP 3 — Date / Time
+  // ============================================================
   let calCursor = new Date();
   calCursor.setDate(1);
 
   function renderStep3(root) {
     root.innerHTML = `
       <div class="section-head">
-        <div class="section-kicker">Step 03 / Schedule</div>
-        <h1 class="section-title">Pick a <em>slot</em></h1>
-        <p class="section-sub">Weekdays 11 AM – 7 PM with a lunch block. Weekends 9 AM – 1 PM. Each appointment is one hour.</p>
+        <div class="section-kicker">${t('step3Kicker')}</div>
+        <h1 class="section-title">${t('step3Title1')} <em>${t('step3Title2')}</em></h1>
+        <p class="section-sub">${t('step3Sub')}</p>
       </div>
 
       <div class="datetime-wrap">
@@ -1075,7 +1805,7 @@
 
         <div class="timeslots">
           <div class="timeslot-head">
-            <span>Available Times</span>
+            <span>${t('availTimes')}</span>
             <span class="day-label" id="dayLabel"></span>
           </div>
           <div id="slotsRoot"></div>
@@ -1102,14 +1832,17 @@
     const year = calCursor.getFullYear();
     const month = calCursor.getMonth();
 
-    monthEl.textContent = calCursor.toLocaleString('en-CA', { month: 'long', year: 'numeric' });
+    monthEl.textContent = fmtMonthYear(calCursor);
 
     grid.innerHTML = '';
 
-    ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(d => {
+    // Week starts Monday
+    const dowOrder = [1,2,3,4,5,6,0];
+    const dowLabels = DAY_NAMES[state.lang].abbr;
+    dowOrder.forEach(i => {
       const el = document.createElement('div');
       el.className = 'cal-dow';
-      el.textContent = d;
+      el.textContent = dowLabels[i];
       grid.appendChild(el);
     });
 
@@ -1132,13 +1865,17 @@
       const el = document.createElement('div');
       el.className = 'cal-day';
       el.textContent = d;
-      if (isWeekend(date)) el.classList.add('weekend');
+
+      const open = isOpenDay(date);
+      if (open) el.classList.add('open-day');
+      else el.classList.add('closed');
+
       if (date < today) el.classList.add('disabled');
       if (ymd(date) === ymd(today)) el.classList.add('today');
       if (state.date && ymd(state.date) === ymd(date)) el.classList.add('selected');
 
       el.addEventListener('click', () => {
-        if (el.classList.contains('disabled') || el.classList.contains('empty')) return;
+        if (el.classList.contains('disabled') || el.classList.contains('empty') || el.classList.contains('closed')) return;
         state.date = date;
         state.time = null;
         drawCalendar();
@@ -1154,61 +1891,42 @@
     const dayLabel = document.getElementById('dayLabel');
 
     if (!state.date) {
-      root.innerHTML = `<div class="no-date">Select a date to see available time slots.</div>`;
+      root.innerHTML = `<div class="no-date">${t('noDate')}</div>`;
       dayLabel.textContent = '';
       return;
     }
 
-    dayLabel.textContent = state.date.toLocaleDateString('en-CA', { weekday: 'long', month: 'short', day: 'numeric' });
+    dayLabel.textContent = fmtDate(state.date, 'short');
 
     const slots = slotsFor(state.date);
     const dayKey = ymd(state.date);
     const booked = state.bookings[dayKey] || new Set();
-    const weekday = !isWeekend(state.date);
-
-    let lunchBlocked = null;
-    if (weekday) {
-      if (state.time === 13) lunchBlocked = 14;
-      else if (state.time === 14) lunchBlocked = 13;
-    }
+    const basePrice = getServicePrice() || 89;
 
     let html = `<div class="timeslot-grid">`;
     slots.forEach(h => {
       const isSel = state.time === h;
       const isTaken = booked.has(h);
-      const isLunch = lunchBlocked === h;
       const cls = ['slot'];
       if (isSel) cls.push('selected');
       if (isTaken) cls.push('taken');
-      if (isLunch) cls.push('blocked');
 
-      let label = '';
-      if (isTaken) label = 'BOOKED';
-      else if (isLunch) label = 'LUNCH BLOCK';
-      else label = `60 min · $${PRICE}`;
+      const label = isTaken ? t('booked') : `60 min · $${basePrice}`;
 
-      html += `<button class="${cls.join(' ')}" data-h="${h}" ${isTaken || isLunch ? 'disabled' : ''}>
+      html += `<button class="${cls.join(' ')}" data-h="${h}" ${isTaken ? 'disabled' : ''}>
         ${toAmPm(h)}
         <small>${label}</small>
       </button>`;
     });
     html += `</div>`;
 
-    if (weekday) {
-      html += `<div class="lunch-note">
-        ⚙ The <b style="color:var(--warning)">1 PM</b> and <b style="color:var(--warning)">2 PM</b> slots share a lunch hour — picking one locks the other for that day.
-      </div>`;
-    } else {
-      html += `<div class="lunch-note">
-        ⚙ Weekend hours: <b style="color:var(--warning)">9 AM – 1 PM</b>. Last appointment starts at 12 PM.
-      </div>`;
-    }
+    html += `<div class="hours-note">⚙ ${t('hoursNote')}</div>`;
 
     root.innerHTML = html;
 
     root.querySelectorAll('.slot').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (btn.classList.contains('taken') || btn.classList.contains('blocked')) return;
+        if (btn.classList.contains('taken')) return;
         state.time = parseInt(btn.dataset.h, 10);
         drawSlots();
         render();
@@ -1216,47 +1934,48 @@
     });
   }
 
+  // ============================================================
+  //  STEP 4 — Info
+  // ============================================================
   function renderStep4(root) {
     root.innerHTML = `
       <div class="section-head">
-        <div class="section-kicker">Step 04 / Your Details</div>
-        <h1 class="section-title">Tell us <em>about you</em></h1>
-        <p class="section-sub">We need to know where to roll up and which vehicle is getting the swap.</p>
+        <div class="section-kicker">${t('step4Kicker')}</div>
+        <h1 class="section-title">${t('step4Title1')} <em>${t('step4Title2')}</em></h1>
+        <p class="section-sub">${t('step4Sub')}</p>
       </div>
 
       <div class="form-grid">
         <div class="field full">
-          <label>Full Name</label>
-          <input id="f-name" type="text" placeholder="Jane Doe" value="${state.info.name}">
+          <label>${t('lblName')}</label>
+          <input id="f-name" type="text" placeholder="${t('phName')}" value="${state.info.name}">
         </div>
         <div class="field full">
-          <label>Service Address (Calgary)</label>
-          <input id="f-address" type="text" placeholder="123 Mountain View Rd SW, Calgary AB" value="${state.info.address}">
+          <label>${t('lblAddress')}</label>
+          <input id="f-address" type="text" placeholder="${t('phAddress')}" value="${state.info.address}">
         </div>
         <div class="field full">
-          <label>Phone Number</label>
-          <input id="f-phone" type="tel" placeholder="+1 (587) 000-0000" value="${state.info.phone}">
+          <label>${t('lblPhone')}</label>
+          <input id="f-phone" type="tel" placeholder="${t('phPhone')}" value="${state.info.phone}">
         </div>
 
         <div class="vehicle-row">
           <div class="field">
-            <label>Vehicle Make</label>
-            <input id="f-make" type="text" placeholder="Toyota" value="${state.info.vMake}">
+            <label>${t('lblMake')}</label>
+            <input id="f-make" type="text" placeholder="${t('phMake')}" value="${state.info.vMake}">
           </div>
           <div class="field">
-            <label>Vehicle Model</label>
-            <input id="f-model" type="text" placeholder="RAV4" value="${state.info.vModel}">
+            <label>${t('lblModel')}</label>
+            <input id="f-model" type="text" placeholder="${t('phModel')}" value="${state.info.vModel}">
           </div>
           <div class="field">
-            <label>Year</label>
-            <input id="f-year" type="text" placeholder="2021" maxlength="4" value="${state.info.vYear}">
+            <label>${t('lblYear')}</label>
+            <input id="f-year" type="text" placeholder="${t('phYear')}" maxlength="4" value="${state.info.vYear}">
           </div>
         </div>
       </div>
 
-      <div class="requirement-banner" style="margin-top:32px">
-        <b>REMINDER —</b> Tires must already be on rims and accessible at the service address.
-      </div>
+      <div class="requirement-banner" style="margin-top:32px">${t('reminder')}</div>
     `;
 
     const bind = (id, key) => {
@@ -1267,7 +1986,7 @@
           vehEl.textContent = `${state.info.vYear || ''} ${state.info.vMake} ${state.info.vModel}`.trim();
           vehEl.classList.remove('empty');
         } else {
-          vehEl.textContent = 'not entered';
+          vehEl.textContent = t('notEntered');
           vehEl.classList.add('empty');
         }
         document.getElementById('nextBtn').disabled = !canContinue();
@@ -1281,43 +2000,44 @@
     bind('f-year','vYear');
   }
 
+  // ============================================================
+  //  STEP 5 — Payment
+  // ============================================================
   function renderStep5(root) {
     root.innerHTML = `
       <div class="section-head">
-        <div class="section-kicker">Step 05 / Payment</div>
-        <h1 class="section-title">Lock <em>it in</em></h1>
-        <p class="section-sub">Secure payment via Stripe. Your card is not charged until the swap is complete.</p>
+        <div class="section-kicker">${t('step5Kicker')}</div>
+        <h1 class="section-title">${t('step5Title1')} <em>${t('step5Title2')}</em></h1>
+        <p class="section-sub">${t('step5Sub')}</p>
       </div>
 
       <div class="pay-wrap">
         <div class="pay-card">
-          <div class="stripe-badge">SECURED BY STRIPE · PCI DSS</div>
+          <div class="stripe-badge">${t('stripeBadge')}</div>
 
           <div class="field">
-            <label>Cardholder Name</label>
-            <input id="p-name" type="text" placeholder="Name on card" value="${state.payment.name}">
+            <label>${t('lblCardName')}</label>
+            <input id="p-name" type="text" placeholder="${t('phCardName')}" value="${state.payment.name}">
           </div>
 
           <div class="field" style="margin-top:16px">
-            <label>Card Number</label>
+            <label>${t('lblCardNum')}</label>
             <input id="p-card" type="text" placeholder="1234 5678 9012 3456" maxlength="19">
           </div>
 
           <div class="card-row">
             <div class="field">
-              <label>Expiry</label>
+              <label>${t('lblExp')}</label>
               <input id="p-exp" type="text" placeholder="MM / YY" maxlength="7">
             </div>
             <div class="field">
-              <label>CVC</label>
+              <label>${t('lblCvc')}</label>
               <input id="p-cvc" type="text" placeholder="123" maxlength="4">
             </div>
           </div>
         </div>
 
-        <div class="requirement-banner">
-          <b>CANCELLATION —</b> Free cancel or reschedule up to 24h before. No-shows charged $99.
-        </div>
+        <div class="requirement-banner">${t('cancellation')}</div>
       </div>
     `;
 
@@ -1342,29 +2062,33 @@
     });
   }
 
+  // ============================================================
+  //  STEP 6 — Success
+  // ============================================================
   function renderSuccess(root) {
     const code = 'YYC-' + Math.random().toString(36).slice(2,8).toUpperCase();
-    const dateStr = state.date.toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' });
+    const dateStr = fmtDate(state.date, 'long');
+    const timeStr = toAmPm(state.time);
+    const msg = t('successMsg').replace('{date}', `<b style="color:var(--ink)">${dateStr}</b>`).replace('{time}', `<b style="color:var(--ink)">${timeStr}</b>`);
     root.innerHTML = `
       <div class="success-screen">
         <div class="success-mark">✓</div>
-        <h1>You're <em>booked</em></h1>
-        <p style="color:var(--ink-dim); max-width:480px; margin: 0 auto 18px">
-          Confirmation sent to your phone. We'll text you when our tech is on the way on <b style="color:var(--ink)">${dateStr}</b> at <b style="color:var(--ink)">${toAmPm(state.time)}</b>.
-        </p>
-        <div class="confirm-code">CONFIRMATION · ${code}</div>
+        <h1>${t('successTitle1')} <em>${t('successTitle2')}</em></h1>
+        <p style="color:var(--ink-dim); max-width:480px; margin: 0 auto 18px">${msg}</p>
+        <div class="confirm-code">${t('confirmLabel')} · ${code}</div>
       </div>
     `;
   }
 
+  // ============================================================
+  //  NAV
+  // ============================================================
   document.getElementById('nextBtn').addEventListener('click', () => {
     if (!canContinue()) return;
     if (state.step === 5) {
       const key = ymd(state.date);
       if (!state.bookings[key]) state.bookings[key] = new Set();
       state.bookings[key].add(state.time);
-      if (state.time === 13) state.bookings[key].add(14);
-      else if (state.time === 14) state.bookings[key].add(13);
       state.step = 6;
     } else {
       state.step++;
@@ -1379,6 +2103,26 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
+  // ============================================================
+  //  LANGUAGE TOGGLE
+  // ============================================================
+  const langBtn = document.getElementById('langBtn');
+  const langMenu = document.getElementById('langMenu');
+  langBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langMenu.classList.toggle('open');
+  });
+  document.addEventListener('click', () => langMenu.classList.remove('open'));
+  langMenu.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setLanguage(b.dataset.lang);
+      langMenu.classList.remove('open');
+    });
+  });
+
+  // Initial render
+  applyI18n();
   render();
 </script>
 </body>
