@@ -123,74 +123,66 @@
     margin-left: 6px;
   }
 
-  /* Language toggle */
-  .lang-toggle {
-    position: relative;
+  /* Language pill bar — sits below the stepper */
+  .lang-bar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: -36px;  /* pull up closer to the stepper */
+    margin-bottom: 48px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    flex-wrap: wrap;
   }
-  .lang-btn {
-    background: var(--panel);
-    border: 1px solid var(--rule);
-    color: var(--ink);
-    padding: 9px 14px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
+  .lang-bar-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-dim);
     text-transform: uppercase;
-    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: border-color .15s;
   }
-  .lang-btn:hover { border-color: var(--accent); }
-  .lang-btn::before {
+  .lang-bar-label::before {
     content: '◐';
     color: var(--accent);
-    font-size: 12px;
+    font-size: 13px;
   }
-  .lang-btn::after {
-    content: '▾';
-    color: var(--ink-dim);
-    font-size: 9px;
-    margin-left: 2px;
+  .lang-bar-buttons {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
   }
-  .lang-menu {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+  .lang-pill {
     background: var(--panel);
     border: 1px solid var(--rule);
-    min-width: 180px;
-    display: none;
-    z-index: 50;
-  }
-  .lang-menu.open { display: block; }
-  .lang-menu button {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--ink);
+    color: var(--ink-dim);
+    padding: 8px 14px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    padding: 12px 16px;
     cursor: pointer;
-    text-align: left;
-    border-bottom: 1px solid var(--rule);
-    transition: background .15s;
+    transition: all .15s;
+    letter-spacing: 0.02em;
   }
-  .lang-menu button:last-child { border-bottom: none; }
-  .lang-menu button:hover { background: var(--bg); color: var(--accent); }
-  .lang-menu button.active {
+  html[lang="zh"] .lang-pill[data-lang="zh"],
+  html[lang="ko"] .lang-pill[data-lang="ko"],
+  html[lang="ja"] .lang-pill[data-lang="ja"],
+  .lang-pill {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  /* Each language button uses its own native font for legibility */
+  .lang-pill[data-lang="zh"] { font-family: 'Noto Sans SC', 'JetBrains Mono', sans-serif; }
+  .lang-pill[data-lang="ko"] { font-family: 'Noto Sans KR', 'JetBrains Mono', sans-serif; }
+  .lang-pill[data-lang="ja"] { font-family: 'Noto Sans JP', 'JetBrains Mono', sans-serif; }
+  .lang-pill:hover {
+    border-color: var(--accent);
     color: var(--accent);
-    background: rgba(255,87,34,0.04);
   }
-  .lang-menu button .code {
-    font-size: 10px;
-    color: var(--ink-faint);
-    letter-spacing: 0.1em;
+  .lang-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+    font-weight: 700;
   }
 
   .app {
@@ -928,17 +920,6 @@
       <span data-i18n="metaOps">OPS <b>YYC</b></span>
       <span><span data-i18n="metaStatus">STATUS</span> <b style="color:var(--ok)">● <span data-i18n="metaOpen">OPEN</span></b></span>
     </div>
-
-    <div class="lang-toggle">
-      <button class="lang-btn" id="langBtn"><span id="langLabel">EN</span></button>
-      <div class="lang-menu" id="langMenu">
-        <button data-lang="en" class="active">English <span class="code">EN</span></button>
-        <button data-lang="zh">中文 <span class="code">ZH</span></button>
-        <button data-lang="ko">한국어 <span class="code">KO</span></button>
-        <button data-lang="ja">日本語 <span class="code">JA</span></button>
-        <button data-lang="es">Español <span class="code">ES</span></button>
-      </div>
-    </div>
   </div>
 </header>
 
@@ -950,6 +931,17 @@
       <div class="step-pill" data-step="3"><span class="step-num"><span>3</span></span> <span data-i18n="stepDateTime">Date / Time</span></div>
       <div class="step-pill" data-step="4"><span class="step-num"><span>4</span></span> <span data-i18n="stepInfo">Your Info</span></div>
       <div class="step-pill" data-step="5"><span class="step-num"><span>5</span></span> <span data-i18n="stepPayment">Payment</span></div>
+    </div>
+
+    <div class="lang-bar" id="langBar">
+      <span class="lang-bar-label" data-i18n="langLabel">Language</span>
+      <div class="lang-bar-buttons">
+        <button data-lang="en" class="lang-pill active">English</button>
+        <button data-lang="zh" class="lang-pill">中文</button>
+        <button data-lang="ko" class="lang-pill">한국어</button>
+        <button data-lang="ja" class="lang-pill">日本語</button>
+        <button data-lang="es" class="lang-pill">Español</button>
+      </div>
     </div>
 
     <div id="step-container"></div>
@@ -1007,6 +999,7 @@
       stepDateTime: 'Date / Time',
       stepInfo: 'Your Info',
       stepPayment: 'Payment',
+      langLabel: 'Language',
       back: '← Back',
       continue: 'Continue →',
       summaryTitle: 'Booking Summary',
@@ -1047,10 +1040,10 @@
       step3Kicker: 'Step 03 / Schedule',
       step3Title1: 'Pick a',
       step3Title2: 'slot',
-      step3Sub: 'We operate Tuesday through Saturday, 9 AM to 3 PM. Each appointment is one hour.',
+      step3Sub: 'We operate Tuesday through Saturday, 9 AM to 4 PM. Each appointment is one hour.',
       availTimes: 'Available Times',
       noDate: 'Select a date to see available time slots.',
-      hoursNote: 'Hours: <b>Tue – Sat</b>, 9 AM – 3 PM. Closed Sunday & Monday.',
+      hoursNote: 'Hours: <b>Tue – Sat</b>, 9 AM – 4 PM. Closed Sunday & Monday.',
       closedDay: 'Closed',
       booked: 'BOOKED',
 
@@ -1103,6 +1096,7 @@
       stepDateTime: '日期 / 时间',
       stepInfo: '个人信息',
       stepPayment: '付款',
+      langLabel: '语言',
       back: '← 返回',
       continue: '继续 →',
       summaryTitle: '预约摘要',
@@ -1143,10 +1137,10 @@
       step3Kicker: '第 03 步 / 时间安排',
       step3Title1: '选择',
       step3Title2: '时段',
-      step3Sub: '营业时间:周二至周六,上午 9 点至下午 3 点。每次预约时长 1 小时。',
+      step3Sub: '营业时间:周二至周六,上午 9 点至下午 4 点。每次预约时长 1 小时。',
       availTimes: '可预约时段',
       noDate: '请先选择日期以查看可预约时段。',
-      hoursNote: '营业时间:<b>周二 – 周六</b>,上午 9 点 – 下午 3 点。周日及周一休息。',
+      hoursNote: '营业时间:<b>周二 – 周六</b>,上午 9 点 – 下午 4 点。周日及周一休息。',
       closedDay: '休息',
       booked: '已预约',
 
@@ -1199,6 +1193,7 @@
       stepDateTime: '날짜 / 시간',
       stepInfo: '고객 정보',
       stepPayment: '결제',
+      langLabel: '언어',
       back: '← 뒤로',
       continue: '계속 →',
       summaryTitle: '예약 요약',
@@ -1239,10 +1234,10 @@
       step3Kicker: '단계 03 / 일정',
       step3Title1: '시간을',
       step3Title2: '선택하세요',
-      step3Sub: '운영 시간: 화요일–토요일, 오전 9시–오후 3시. 예약당 1시간입니다.',
+      step3Sub: '운영 시간: 화요일–토요일, 오전 9시–오후 4시. 예약당 1시간입니다.',
       availTimes: '예약 가능 시간',
       noDate: '날짜를 선택하면 예약 가능 시간이 표시됩니다.',
-      hoursNote: '운영 시간: <b>화 – 토</b>, 오전 9시 – 오후 3시. 일요일 및 월요일 휴무.',
+      hoursNote: '운영 시간: <b>화 – 토</b>, 오전 9시 – 오후 4시. 일요일 및 월요일 휴무.',
       closedDay: '휴무',
       booked: '예약됨',
 
@@ -1295,6 +1290,7 @@
       stepDateTime: '日時',
       stepInfo: 'お客様情報',
       stepPayment: 'お支払い',
+      langLabel: '言語',
       back: '← 戻る',
       continue: '次へ →',
       summaryTitle: '予約内容',
@@ -1335,10 +1331,10 @@
       step3Kicker: 'ステップ 03 / 日時',
       step3Title1: '時間を',
       step3Title2: 'お選びください',
-      step3Sub: '営業日:火曜~土曜、午前 9 時~午後 3 時。各予約は 1 時間です。',
+      step3Sub: '営業日:火曜~土曜、午前 9 時~午後 4 時。各予約は 1 時間です。',
       availTimes: '予約可能時間',
       noDate: '日付を選択すると予約可能時間が表示されます。',
-      hoursNote: '営業時間:<b>火 – 土</b>、午前 9 時 – 午後 3 時。日曜・月曜定休。',
+      hoursNote: '営業時間:<b>火 – 土</b>、午前 9 時 – 午後 4 時。日曜・月曜定休。',
       closedDay: '定休',
       booked: '予約済み',
 
@@ -1391,6 +1387,7 @@
       stepDateTime: 'Fecha / Hora',
       stepInfo: 'Tus Datos',
       stepPayment: 'Pago',
+      langLabel: 'Idioma',
       back: '← Atrás',
       continue: 'Continuar →',
       summaryTitle: 'Resumen de Reserva',
@@ -1431,10 +1428,10 @@
       step3Kicker: 'Paso 03 / Horario',
       step3Title1: 'Elige un',
       step3Title2: 'horario',
-      step3Sub: 'Operamos de martes a sábado, de 9 AM a 3 PM. Cada cita dura una hora.',
+      step3Sub: 'Operamos de martes a sábado, de 9 AM a 4 PM. Cada cita dura una hora.',
       availTimes: 'Horarios Disponibles',
       noDate: 'Selecciona una fecha para ver los horarios disponibles.',
-      hoursNote: 'Horario: <b>Mar – Sáb</b>, 9 AM – 3 PM. Cerrado domingos y lunes.',
+      hoursNote: 'Horario: <b>Mar – Sáb</b>, 9 AM – 4 PM. Cerrado domingos y lunes.',
       closedDay: 'Cerrado',
       booked: 'RESERVADO',
 
@@ -1538,8 +1535,8 @@
     return dow >= 2 && dow <= 6;
   }
   function slotsFor(d) {
-    // 9, 10, 11, 12, 13, 14 (last appt starts 2 PM, ends 3 PM)
-    return [9, 10, 11, 12, 13, 14];
+    // 9, 10, 11, 12, 13, 14, 15 (last appt starts 3 PM, ends 4 PM)
+    return [9, 10, 11, 12, 13, 14, 15];
   }
 
   function fmtDate(d, style) {
@@ -1577,10 +1574,7 @@
       if (val.includes('<')) el.innerHTML = val;
       else el.textContent = val;
     });
-    document.getElementById('langLabel').textContent = state.lang.toUpperCase();
-    document.querySelectorAll('#langMenu button').forEach(b => {
-      b.classList.toggle('active', b.dataset.lang === state.lang);
-    });
+    updateLangBar();
   }
 
   function setLanguage(lang) {
@@ -2104,22 +2098,19 @@
   });
 
   // ============================================================
-  //  LANGUAGE TOGGLE
+  //  LANGUAGE TOGGLE (pill buttons below stepper)
   // ============================================================
-  const langBtn = document.getElementById('langBtn');
-  const langMenu = document.getElementById('langMenu');
-  langBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    langMenu.classList.toggle('open');
-  });
-  document.addEventListener('click', () => langMenu.classList.remove('open'));
-  langMenu.querySelectorAll('button').forEach(b => {
-    b.addEventListener('click', (e) => {
-      e.stopPropagation();
-      setLanguage(b.dataset.lang);
-      langMenu.classList.remove('open');
+  document.querySelectorAll('#langBar .lang-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setLanguage(btn.dataset.lang);
     });
   });
+
+  function updateLangBar() {
+    document.querySelectorAll('#langBar .lang-pill').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === state.lang);
+    });
+  }
 
   // Initial render
   applyI18n();
