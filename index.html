@@ -661,10 +661,78 @@
   }
   .field input:focus { outline: none; border-color: var(--accent); }
   .field input::placeholder { color: var(--ink-faint); }
+
+  /* Validation states */
+  .field.invalid input {
+    border-color: #d9534f;
+  }
+  .field.valid input {
+    border-color: var(--ok);
+  }
+  .field-msg {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: -2px;
+    min-height: 12px;
+    color: var(--ink-faint);
+  }
+  .field.invalid .field-msg { color: #e57b78; }
+  .field.valid .field-msg { color: var(--ok); }
+  .field.checking .field-msg { color: var(--warning); }
+
+  /* Address autocomplete */
+  .address-wrap {
+    position: relative;
+  }
+  .address-suggestions {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 40;
+    display: none;
+  }
+  .address-suggestions.open { display: block; }
+  .address-item {
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    transition: background .12s;
+    line-height: 1.4;
+  }
+  .address-item:last-child { border-bottom: none; }
+  .address-item:hover, .address-item.active {
+    background: var(--bg);
+    color: var(--accent);
+  }
+  .address-item small {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.05em;
+    margin-top: 3px;
+    text-transform: uppercase;
+  }
+  .address-item:hover small, .address-item.active small { color: var(--ink-dim); }
+  .address-loading {
+    padding: 12px 14px;
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
   .vehicle-row {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: 1.5fr 1.5fr 0.8fr;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
 
@@ -1063,6 +1131,16 @@
       phModel: 'RAV4',
       lblYear: 'Year',
       phYear: '2021',
+      msgAddrHint: 'Start typing — we will look up your address',
+      msgAddrChecking: 'Looking up address…',
+      msgAddrPick: 'Select an address from the list',
+      msgAddrValid: '✓ Address verified',
+      msgAddrInvalid: 'Please select a valid Calgary address',
+      msgAddrNoResults: 'No matches found — try again',
+      msgAddrError: 'Could not verify — try again',
+      msgPhoneHint: 'Enter a 10-digit phone number',
+      msgPhoneValid: '✓ Valid phone number',
+      msgPhoneInvalid: 'Phone number must be 10 digits',
       reminder: '<b>REMINDER —</b> For tire swaps, your seasonal tires must already be on rims and accessible at the service address.',
 
       step5Kicker: 'Step 05 / Payment',
@@ -1160,6 +1238,16 @@
       phModel: 'RAV4',
       lblYear: '年份',
       phYear: '2021',
+      msgAddrHint: '开始输入,我们将查找您的地址',
+      msgAddrChecking: '正在查询地址…',
+      msgAddrPick: '请从列表中选择一个地址',
+      msgAddrValid: '✓ 地址已验证',
+      msgAddrInvalid: '请选择有效的卡尔加里地址',
+      msgAddrNoResults: '未找到匹配项,请重试',
+      msgAddrError: '无法验证,请重试',
+      msgPhoneHint: '请输入 10 位数电话号码',
+      msgPhoneValid: '✓ 电话号码有效',
+      msgPhoneInvalid: '电话号码必须为 10 位数字',
       reminder: '<b>提醒 —</b> 换季轮胎服务要求您的季节性轮胎已安装在轮毂上,并可在服务地址取用。',
 
       step5Kicker: '第 05 步 / 付款',
@@ -1257,6 +1345,16 @@
       phModel: 'RAV4',
       lblYear: '연식',
       phYear: '2021',
+      msgAddrHint: '입력을 시작하면 주소를 검색합니다',
+      msgAddrChecking: '주소 확인 중…',
+      msgAddrPick: '목록에서 주소를 선택해주세요',
+      msgAddrValid: '✓ 주소가 확인되었습니다',
+      msgAddrInvalid: '유효한 캘거리 주소를 선택해주세요',
+      msgAddrNoResults: '일치하는 주소가 없습니다',
+      msgAddrError: '확인할 수 없습니다. 다시 시도해주세요',
+      msgPhoneHint: '10자리 전화번호를 입력하세요',
+      msgPhoneValid: '✓ 유효한 전화번호',
+      msgPhoneInvalid: '전화번호는 10자리여야 합니다',
       reminder: '<b>안내 —</b> 타이어 교체 서비스는 계절 타이어가 휠에 장착된 상태로 서비스 주소에 준비되어 있어야 합니다.',
 
       step5Kicker: '단계 05 / 결제',
@@ -1354,6 +1452,16 @@
       phModel: 'RAV4',
       lblYear: '年式',
       phYear: '2021',
+      msgAddrHint: '入力すると住所を検索します',
+      msgAddrChecking: '住所を確認中…',
+      msgAddrPick: 'リストから住所を選択してください',
+      msgAddrValid: '✓ 住所が確認されました',
+      msgAddrInvalid: '有効なカルガリーの住所を選択してください',
+      msgAddrNoResults: '一致する住所が見つかりません',
+      msgAddrError: '確認できませんでした。再度お試しください',
+      msgPhoneHint: '10 桁の電話番号を入力してください',
+      msgPhoneValid: '✓ 有効な電話番号',
+      msgPhoneInvalid: '電話番号は 10 桁である必要があります',
       reminder: '<b>ご注意 —</b> タイヤ交換は、季節タイヤがホイールに装着済みの状態で、ご訪問先にてご準備ください。',
 
       step5Kicker: 'ステップ 05 / お支払い',
@@ -1451,6 +1559,16 @@
       phModel: 'RAV4',
       lblYear: 'Año',
       phYear: '2021',
+      msgAddrHint: 'Empieza a escribir — buscaremos tu dirección',
+      msgAddrChecking: 'Buscando dirección…',
+      msgAddrPick: 'Selecciona una dirección de la lista',
+      msgAddrValid: '✓ Dirección verificada',
+      msgAddrInvalid: 'Selecciona una dirección válida de Calgary',
+      msgAddrNoResults: 'Sin resultados — intenta de nuevo',
+      msgAddrError: 'No se pudo verificar — intenta de nuevo',
+      msgPhoneHint: 'Ingresa un número de 10 dígitos',
+      msgPhoneValid: '✓ Número válido',
+      msgPhoneInvalid: 'El número debe tener 10 dígitos',
       reminder: '<b>RECORDATORIO —</b> Para cambios estacionales, los neumáticos deben estar montados en llantas y disponibles en la dirección del servicio.',
 
       step5Kicker: 'Paso 05 / Pago',
@@ -1513,7 +1631,7 @@
     city: null,
     date: null,
     time: null,
-    info: { name: '', address: '', phone: '', vMake: '', vModel: '', vYear: '' },
+    info: { name: '', address: '', addressValid: false, phone: '', phoneValid: false, vMake: '', vModel: '' },
     payment: { card: '', exp: '', cvc: '', name: '' },
     bookings: {}
   };
@@ -1651,7 +1769,7 @@
 
     const vehEl = document.getElementById('sum-vehicle');
     if (state.info.vMake || state.info.vModel) {
-      vehEl.textContent = `${state.info.vYear || ''} ${state.info.vMake} ${state.info.vModel}`.trim();
+      vehEl.textContent = `${state.info.vMake} ${state.info.vModel}`.trim();
       vehEl.classList.remove('empty');
     } else {
       vehEl.textContent = t('notEntered');
@@ -1687,7 +1805,7 @@
     if (state.step === 3) return state.date && state.time !== null;
     if (state.step === 4) {
       const i = state.info;
-      return i.name && i.address && i.phone && i.vMake && i.vModel && i.vYear;
+      return i.name && i.addressValid && i.phoneValid && i.vMake && i.vModel;
     }
     if (state.step === 5) {
       const p = state.payment;
@@ -1731,7 +1849,10 @@
     root.querySelectorAll('.service-card').forEach(card => {
       card.addEventListener('click', () => {
         state.service = card.dataset.svc;
+        // Auto-advance to next step
+        state.step = 2;
         render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
   }
@@ -1767,7 +1888,10 @@
     `;
     root.querySelector('.city-card.available').addEventListener('click', () => {
       state.city = 'calgary';
+      // Auto-advance to next step
+      state.step = 3;
       render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -1932,6 +2056,10 @@
   //  STEP 4 — Info
   // ============================================================
   function renderStep4(root) {
+    // Initial validation state from any restored values
+    const phoneInitiallyValid = state.info.phoneValid;
+    const addrInitiallyValid = state.info.addressValid;
+
     root.innerHTML = `
       <div class="section-head">
         <div class="section-kicker">${t('step4Kicker')}</div>
@@ -1940,17 +2068,24 @@
       </div>
 
       <div class="form-grid">
-        <div class="field full">
+        <div class="field full" id="field-name">
           <label>${t('lblName')}</label>
           <input id="f-name" type="text" placeholder="${t('phName')}" value="${state.info.name}">
         </div>
-        <div class="field full">
+
+        <div class="field full ${addrInitiallyValid ? 'valid' : ''}" id="field-address">
           <label>${t('lblAddress')}</label>
-          <input id="f-address" type="text" placeholder="${t('phAddress')}" value="${state.info.address}">
+          <div class="address-wrap">
+            <input id="f-address" type="text" placeholder="${t('phAddress')}" value="${state.info.address}" autocomplete="off">
+            <div class="address-suggestions" id="addr-suggestions"></div>
+          </div>
+          <div class="field-msg" id="addr-msg">${addrInitiallyValid ? t('msgAddrValid') : t('msgAddrHint')}</div>
         </div>
-        <div class="field full">
+
+        <div class="field full ${phoneInitiallyValid ? 'valid' : ''}" id="field-phone">
           <label>${t('lblPhone')}</label>
-          <input id="f-phone" type="tel" placeholder="${t('phPhone')}" value="${state.info.phone}">
+          <input id="f-phone" type="tel" placeholder="${t('phPhone')}" value="${state.info.phone}" maxlength="14">
+          <div class="field-msg" id="phone-msg">${phoneInitiallyValid ? t('msgPhoneValid') : t('msgPhoneHint')}</div>
         </div>
 
         <div class="vehicle-row">
@@ -1962,22 +2097,19 @@
             <label>${t('lblModel')}</label>
             <input id="f-model" type="text" placeholder="${t('phModel')}" value="${state.info.vModel}">
           </div>
-          <div class="field">
-            <label>${t('lblYear')}</label>
-            <input id="f-year" type="text" placeholder="${t('phYear')}" maxlength="4" value="${state.info.vYear}">
-          </div>
         </div>
       </div>
 
       <div class="requirement-banner" style="margin-top:32px">${t('reminder')}</div>
     `;
 
-    const bind = (id, key) => {
+    // --- Name + Vehicle Make/Model: simple binds ---
+    const simpleBind = (id, key) => {
       document.getElementById(id).addEventListener('input', e => {
         state.info[key] = e.target.value;
         const vehEl = document.getElementById('sum-vehicle');
         if (state.info.vMake || state.info.vModel) {
-          vehEl.textContent = `${state.info.vYear || ''} ${state.info.vMake} ${state.info.vModel}`.trim();
+          vehEl.textContent = `${state.info.vMake} ${state.info.vModel}`.trim();
           vehEl.classList.remove('empty');
         } else {
           vehEl.textContent = t('notEntered');
@@ -1986,12 +2118,181 @@
         document.getElementById('nextBtn').disabled = !canContinue();
       });
     };
-    bind('f-name','name');
-    bind('f-address','address');
-    bind('f-phone','phone');
-    bind('f-make','vMake');
-    bind('f-model','vModel');
-    bind('f-year','vYear');
+    simpleBind('f-name','name');
+    simpleBind('f-make','vMake');
+    simpleBind('f-model','vModel');
+
+    // --- Phone: auto-format (XXX) XXX-XXXX, validate 10 digits ---
+    const phoneInput = document.getElementById('f-phone');
+    const phoneField = document.getElementById('field-phone');
+    const phoneMsg = document.getElementById('phone-msg');
+
+    function formatPhone(raw) {
+      const d = raw.replace(/\D/g,'').slice(0,10);
+      if (d.length === 0) return '';
+      if (d.length < 4) return `(${d}`;
+      if (d.length < 7) return `(${d.slice(0,3)}) ${d.slice(3)}`;
+      return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+    }
+
+    phoneInput.addEventListener('input', e => {
+      const formatted = formatPhone(e.target.value);
+      e.target.value = formatted;
+      state.info.phone = formatted;
+      const digits = formatted.replace(/\D/g,'');
+
+      phoneField.classList.remove('valid','invalid');
+      if (digits.length === 0) {
+        phoneMsg.textContent = t('msgPhoneHint');
+      } else if (digits.length === 10) {
+        state.info.phoneValid = true;
+        phoneField.classList.add('valid');
+        phoneMsg.textContent = t('msgPhoneValid');
+      } else {
+        state.info.phoneValid = false;
+        phoneField.classList.add('invalid');
+        phoneMsg.textContent = t('msgPhoneInvalid');
+      }
+      document.getElementById('nextBtn').disabled = !canContinue();
+    });
+
+    // --- Address: Nominatim autocomplete ---
+    const addrInput = document.getElementById('f-address');
+    const addrSuggestions = document.getElementById('addr-suggestions');
+    const addrField = document.getElementById('field-address');
+    const addrMsg = document.getElementById('addr-msg');
+    let addrTimer = null;
+    let activeIndex = -1;
+
+    function clearSuggestions() {
+      addrSuggestions.innerHTML = '';
+      addrSuggestions.classList.remove('open');
+      activeIndex = -1;
+    }
+
+    function setAddrValid(displayName) {
+      state.info.address = displayName;
+      state.info.addressValid = true;
+      addrField.classList.remove('invalid','checking');
+      addrField.classList.add('valid');
+      addrMsg.textContent = t('msgAddrValid');
+      document.getElementById('nextBtn').disabled = !canContinue();
+    }
+    function setAddrInvalid() {
+      state.info.addressValid = false;
+      addrField.classList.remove('valid','checking');
+      if (addrInput.value.trim().length === 0) {
+        addrField.classList.remove('invalid');
+        addrMsg.textContent = t('msgAddrHint');
+      } else {
+        addrField.classList.add('invalid');
+        addrMsg.textContent = t('msgAddrInvalid');
+      }
+      document.getElementById('nextBtn').disabled = !canContinue();
+    }
+
+    async function fetchSuggestions(query) {
+      if (!query || query.trim().length < 4) {
+        clearSuggestions();
+        return;
+      }
+      addrField.classList.remove('valid','invalid');
+      addrField.classList.add('checking');
+      addrMsg.textContent = t('msgAddrChecking');
+
+      try {
+        // Bias to Calgary, Alberta. viewbox approx covers the city.
+        // Nominatim usage policy: include a UA / referer (browser handles).
+        const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6&countrycodes=ca&q=${encodeURIComponent(query + ', Calgary, AB')}`;
+        const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+        if (!res.ok) throw new Error('lookup failed');
+        const data = await res.json();
+
+        // Filter to Calgary results only
+        const calgaryResults = data.filter(r => {
+          const a = r.address || {};
+          const city = (a.city || a.town || a.municipality || a.village || '').toLowerCase();
+          return city.includes('calgary') || (r.display_name || '').toLowerCase().includes('calgary');
+        });
+
+        if (calgaryResults.length === 0) {
+          addrSuggestions.innerHTML = `<div class="address-loading">${t('msgAddrNoResults')}</div>`;
+          addrSuggestions.classList.add('open');
+          addrField.classList.remove('checking');
+          addrField.classList.add('invalid');
+          addrMsg.textContent = t('msgAddrInvalid');
+          return;
+        }
+
+        addrSuggestions.innerHTML = calgaryResults.map((r, i) => {
+          const a = r.address || {};
+          const houseNum = a.house_number || '';
+          const road = a.road || a.pedestrian || '';
+          const primary = [houseNum, road].filter(Boolean).join(' ') || r.display_name.split(',')[0];
+          const cityPart = [a.suburb || a.neighbourhood, a.city || a.town || 'Calgary', a.postcode].filter(Boolean).join(', ');
+          return `<div class="address-item" data-i="${i}" data-display="${encodeURIComponent(r.display_name)}">
+            ${primary}
+            <small>${cityPart}</small>
+          </div>`;
+        }).join('');
+        addrSuggestions.classList.add('open');
+        addrField.classList.remove('checking');
+        addrMsg.textContent = t('msgAddrPick');
+
+        addrSuggestions.querySelectorAll('.address-item').forEach(item => {
+          item.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const display = decodeURIComponent(item.dataset.display);
+            // Set input to a cleaner display
+            const text = item.childNodes[0].textContent.trim() + ', ' + item.querySelector('small').textContent;
+            addrInput.value = text;
+            setAddrValid(text);
+            clearSuggestions();
+          });
+        });
+      } catch (err) {
+        addrField.classList.remove('checking');
+        addrField.classList.add('invalid');
+        addrMsg.textContent = t('msgAddrError');
+      }
+    }
+
+    addrInput.addEventListener('input', e => {
+      // Mark as invalid until they pick a suggestion
+      state.info.address = e.target.value;
+      state.info.addressValid = false;
+      addrField.classList.remove('valid');
+      document.getElementById('nextBtn').disabled = !canContinue();
+
+      if (addrTimer) clearTimeout(addrTimer);
+      addrTimer = setTimeout(() => fetchSuggestions(e.target.value), 350);
+    });
+
+    addrInput.addEventListener('blur', () => {
+      // Delay so click on suggestion still registers
+      setTimeout(() => {
+        clearSuggestions();
+        if (!state.info.addressValid) setAddrInvalid();
+      }, 180);
+    });
+
+    addrInput.addEventListener('keydown', (e) => {
+      const items = addrSuggestions.querySelectorAll('.address-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+        items.forEach((it, i) => it.classList.toggle('active', i === activeIndex));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        items.forEach((it, i) => it.classList.toggle('active', i === activeIndex));
+      } else if (e.key === 'Enter' && activeIndex >= 0) {
+        e.preventDefault();
+        items[activeIndex].dispatchEvent(new MouseEvent('mousedown'));
+      } else if (e.key === 'Escape') {
+        clearSuggestions();
+      }
+    });
   }
 
   // ============================================================
